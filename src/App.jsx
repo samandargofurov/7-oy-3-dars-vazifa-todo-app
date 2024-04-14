@@ -1,11 +1,13 @@
 import { PiTrashSimple } from "react-icons/pi";
 import { FaPlus } from "react-icons/fa6";
 import { useRef } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import "./App.css";
 
 function App() {
-  const todo = useRef();
+  const todo = useRef(null);
+  const info = useSelector(state => state.todo.Todo)
+  console.log(info);
 
   document.body.style.backgroundColor = "#0D0714";
 
@@ -21,13 +23,21 @@ function App() {
     const isValid = validate();
 
     if (isValid) {
-      const todo = {
+      const Todo = {
         todo: todo.current.value,
         id: Date.now(),
       };
 
-      dispatch({ type: "TODO_ADD" });
+      dispatch({ type: "TODO_ADD", payload: Todo });
     }
+  }
+
+  function handleDelete(id) {
+    let isDelete = confirm("Do you want to Delete?");
+    if (isDelete) {
+      dispatch({type: "TODO_DELETE", payload: id})
+    }
+
   }
 
   return (
@@ -54,25 +64,33 @@ function App() {
           </div>
 
           <div className="pl-20 pr-20 mt-10">
-            <h3 className="text-white mb-5 text-md">Tasks to do - 1</h3>
+
             <div className="cards flex flex-col gap-4">
-              <div
-                className="card flex justify-between px-5 py-3 rounded-lg"
-                style={{ backgroundColor: "#15101C" }}
-              >
-                <label htmlFor="text" style={{ color: "#9E78CF" }}>
-                  To study React fundamentals
-                </label>
-                <div className="flex gap-2 items-center">
-                  <input type="checkbox" name="text" id="text" />
-                  <span className="cursor-pointer">
-                    <PiTrashSimple
-                      className="text-2xl"
-                      style={{ color: "#9E78CF" }}
-                    />
-                  </span>
-                </div>
-              </div>
+
+            <h3 className="text-white mb-5 text-md">Tasks to do - 1</h3>
+
+              {
+                info.length > 0 && info.map((el, index) => {
+                  return(
+                    <div key={index} className="card flex justify-between px-5 py-3 rounded-lg" style={{ backgroundColor: "#15101C" }} >
+                      <h2 className="text-white">{index + 1}</h2>
+                      <label htmlFor="text" style={{ color: "#9E78CF" }}>
+                        {el.todo}
+                      </label>
+                      <div className="flex gap-2 items-center">
+                        <input type="checkbox" name="text" id="text" />
+                        <span className="cursor-pointer">
+                          <PiTrashSimple onClick={handleDelete}
+                            className="text-2xl"
+                            style={{ color: "#9E78CF" }}
+                          />
+                        </span>
+                      </div>
+                    </div>
+                  )
+                })
+              }
+
             </div>
           </div>
         </div>

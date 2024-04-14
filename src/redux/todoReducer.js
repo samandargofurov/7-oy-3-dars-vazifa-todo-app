@@ -1,16 +1,22 @@
 const defaultState = {
-    todo: []
+    Todo: []
 }
 
 export function todoReducer(state = defaultState, action) {
     if(action.type == "TODO_ADD") {
-        let copied = JSON.parse(JSON.stringify(state.todo))
+        let copied = JSON.parse(JSON.stringify(state.Todo))
         copied.push(action.payload)
 
-        return {...state, users: copied}
+        return {...state, Todo: copied}
 
     } else if (action.type == "TODO_DELETE") {
-    } else if (action.type == "TODO_EDIT") {
+        let copied = JSON.parse(JSON.stringify(state.Todo))
+        copied = copied.filter(el => {
+            return el.id != action.payload
+        })
+
+        return {...state, Todo: copied}
+
     } else {
         return state;
     }
